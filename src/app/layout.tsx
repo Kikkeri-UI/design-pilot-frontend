@@ -3,7 +3,7 @@ import './globals.css';
 import React from 'react';
 
 export const metadata = {
-  title: 'AI-Powered UX Testing',
+  title: 'Design Pilot',
   description: 'Simulate user testing with AI to get instant design feedback.',
 };
 
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-950 min-h-screen text-white">
+      <body className="bg-white min-h-scree">
         {children}
       </body>
     </html>
