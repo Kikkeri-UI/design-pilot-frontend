@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx}", // include your app directory
-    "./src/components/**/*.{js,ts,jsx,tsx}", // if you have components here
-    "./src/pages/**/*.{js,ts,jsx,tsx}", // if you have any pages folder (optional)
+    "./src/app/**/*.{js,ts,jsx,tsx}", 
+    "./src/components/**/*.{js,ts,jsx,tsx}", 
+    "./src/pages/**/*.{js,ts,jsx,tsx}", 
   ],
   theme: {
     container: {
@@ -28,10 +28,11 @@ module.exports = {
         success: "#10B981",
         warning: "#F59E0B",
         danger: "#EF4444",
+        neutral: "#f5f3ed"
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui"],
-        heading: ["Poppins", "ui-sans-serif"],
+        heading: ["Outfit", "ui-sans-serif"],
         mono: ["Fira Code", "monospace"],
       },
       borderRadius: {
