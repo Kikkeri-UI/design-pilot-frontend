@@ -4,9 +4,12 @@
 import InputHeaderComponent from "../components/generic/input-header-component/inputHeaderComponent.UI";
 import { Button } from "../components/generic/button-component/Button.UI";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import InputFooterComponent from "../components/generic/input-footer/inputFooter.UI";
 
 export default function TestByTextPage() {
     const [designIdea, setDesignIdea] = useState("");
+    const router = useRouter();
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -33,15 +36,11 @@ export default function TestByTextPage() {
                     onChange={(e) => setDesignIdea(e.target.value)}
                     className="border border-gray-700 rounded-lg w-full max-h-64 h-56 p-6 overflow-y-auto resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                
-                <div className="flex justify-between mt-4">
-                    <Button type="submit" variant="secondary" size="lg" title="Back">
-                        Go Back
-                    </Button>
-                    <Button type="submit" variant="primary" size="lg" title="Get Insights">
-                        Get Insights
-                    </Button>
-                </div>
+
+                <InputFooterComponent
+                    onClickBack={() => router.push('/input-method')}
+                    onClickGenerate={() => router.push('/generate-insights')}
+                />
             </form>
         </div>
     );
