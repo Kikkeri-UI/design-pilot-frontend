@@ -32,7 +32,7 @@ export default function HomePage() {
                 <TileComponent
                     title="Image-Based"
                     description="Provide a screenshot of your design for a visual-based critique."
-                    onClick={() => router.push('/test-by-screenshot')}
+                    onClick={() => router.push('/test-by-image')}
                 />
 
                 {/** Figma tile */}
