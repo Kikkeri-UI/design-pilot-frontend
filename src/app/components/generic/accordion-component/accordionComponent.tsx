@@ -14,13 +14,13 @@ const Accordion: React.FC<AccordionProps> = ({ header, body }) => {
   };
 
   return (
-    <div className="border border-black rounded-md mb-2 bg-white overflow-hidden">
+    <div className="border border-gray-400 rounded-md mb-2 bg-neutral overflow-hidden">
       <div
         className="flex justify-between items-center p-3 cursor-pointer select-none"
         onClick={toggleAccordion}
       >
-        <div className="font-bold">{header}</div>
-        <div className="text-2xl font-bold transition-transform duration-300 transform">
+        <div className="font-bold text-gray-700">{header}</div>
+        <div className="text-2xl font-bold transition-transform duration-300 transform text-black-">
           {isExpanded ? '−' : '+'}
         </div>
       </div>

@@ -20,7 +20,7 @@ const ResultTileComponent: React.FC<ResultTileProps> = ({ critiqueMetric, metric
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg shadow-sm p-4 mb-4">
+    <div className="border border-border rounded-lg shadow-sm p-4 mb-4">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold capitalize">{metricName.replace(/_/g, ' ')}</h3>
         <span className={`text-2xl font-bold ${getScoreColor(critiqueMetric.score)}`}>

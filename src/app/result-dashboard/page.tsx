@@ -38,18 +38,18 @@ export default function ResultsDashboardPage() {
 
   return (
     // ... Rest of the component uses 'critique' state as before ...
-    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-12">
+    <div className="min-h-screen bg-white text-black p-4 md:p-12">
       <div className="max-w-7xl mx-auto py-8">
         
         {/* Back Button */}
-        <button
+        {/* <button
           onClick={() => router.back()}
           className="mb-8 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-200 flex items-center"
         >
           <ChevronLeftIcon className="h-5 w-5 mr-2" /> Back to Input
-        </button>
+        </button> */}
 
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 text-blue-400">Design Critique Dashboard</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4 text-success">Design Critique Dashboard</h1>
         {/* ... */}
 
         {/* Overall Summary */}
