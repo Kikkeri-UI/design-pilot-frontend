@@ -1,3 +1,5 @@
+// test-by-figma page
+
 /**
  * Page responsible for getting figma file link and PAT from the users. 
  */
@@ -18,7 +20,11 @@ const TestByFigmaPage = () => {
     const router = useRouter()
 
     const handleFormSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        // NOTE: The InputFooterComponent is calling this function via onClickGenerate
+        // If that button has type="submit", e.preventDefault() is still necessary
+        e.preventDefault(); 
+        
+        // This is where the loader starts
         setIsSubmitting(true);
 
         try {
@@ -35,10 +41,9 @@ const TestByFigmaPage = () => {
             if (response.ok) {
                 const data: DesignCritiqueOutput = await response.json();
                 console.log(data)
-                // --- CRUCIAL STEP: Save data to local storage ---
+                
                 localStorage.setItem('lastCritique', JSON.stringify(data));
                 
-                // Clear state for security and next use
                 setFigmaFileUrl('');
                 setFigmaPat('');
                 setFigmaNodeId('');
@@ -54,6 +59,7 @@ const TestByFigmaPage = () => {
             console.error('Error during Figma critique:', error);
             alert('A network error occurred. Ensure the FastAPI server is running at http://127.0.0.1:8000.');
         } finally {
+            // This is where the loader stops
             setIsSubmitting(false);
         }
     }
@@ -82,7 +88,8 @@ const TestByFigmaPage = () => {
                         value={figmaFileUrl}
                         onChange={(e) => setFigmaFileUrl(e.target.value)}
                         required
-                        className="border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSubmitting} // <-- DISABLED when submitting
+                        className={`border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isSubmitting ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}
                     />
                     <p className="mt-1 text-xs text-gray-400">
                         Paste the full URL of your Figma file. Ensure it's accessible by your PAT (e.g., not restricted).
@@ -101,7 +108,8 @@ const TestByFigmaPage = () => {
                         value={figmaPat}
                         onChange={(e) => setFigmaPat(e.target.value)}
                         required
-                        className="border border-border text-gray-600 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSubmitting} // <-- DISABLED when submitting
+                        className={`border border-border text-gray-600 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isSubmitting ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}
                     />
                     <p className="mt-1 text-xs text-gray-400">
                         Generate a PAT in Figma: <a href="https://www.figma.com/developers/api#access-tokens" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Settings &gt; Personal Access Tokens</a>. Your PAT is used only for this critique and is not stored.
@@ -119,7 +127,8 @@ const TestByFigmaPage = () => {
                         placeholder="e.g., 123:456"
                         value={figmaNodeId}
                         onChange={(e) => setFigmaNodeId(e.target.value)}
-                        className="border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSubmitting} // <-- DISABLED when submitting
+                        className={`border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isSubmitting ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}
                     />
                     <p className="mt-1 text-xs text-gray-400">
                         (Optional) The ID of a specific frame, group, or component. Find it in the Figma URL after `node-id=`. If left blank, the AI will attempt to critique the selection or entire page.
@@ -128,9 +137,7 @@ const TestByFigmaPage = () => {
 
                 {/* Footer Buttons */}
                 <InputFooterComponent
-                    // NOTE: Use the correct router link for navigating back to the selection page
                     onClickBack={() => router.push('/critique-method')} 
-                    // Pass the submitting state to the footer component for button disabling/loading
                     isSubmitting={isSubmitting}
                     onClickGenerate={handleFormSubmit}
                 />
