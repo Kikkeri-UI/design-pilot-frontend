@@ -8,7 +8,7 @@ import React from "react";
 const InputHeaderComponent: React.FC<InputHeader> = ({ header, description, model }) => {
     return (
         <div className="input-header-container flex flex-col justify-center items-center my-4 px-6 py-3">
-            <h1 className="input-header text-4xl md:text-5xl font-bold text-accent mb-4">
+            <h1 className="input-header text-4xl md:text-5xl font-bold text-success mb-4">
                 {header}
             </h1>
             <div className="input-desc text-base text-gray-900 mb-3">

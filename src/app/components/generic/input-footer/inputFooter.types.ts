@@ -1,4 +1,5 @@
 export interface InputFooter {
     onClickBack: () => void
-    onClickGenerate: () => void
+    onClickGenerate: any
+    isSubmitting? : boolean
 }

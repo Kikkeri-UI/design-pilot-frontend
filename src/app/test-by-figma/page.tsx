@@ -8,6 +8,7 @@ import InputHeaderComponent from "../components/generic/input-header-component/i
 import InputFooterComponent from "../components/generic/input-footer/inputFooter.UI"
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DesignCritiqueOutput } from "../result-dashboard/CriticqueTypes";
 
 const TestByFigmaPage = () => {
     const [figmaFileUrl, setFigmaFileUrl] = useState("");
@@ -20,47 +21,46 @@ const TestByFigmaPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // --- Your API call to the backend will go here ---
-        // This is where you'll send figmaFileUrl, figmaPat, and figmaNodeId to your Next.js API route
-        // Example (this is a placeholder for actual API call):
-        // try {
-        //     const response = await fetch('/api/critique-figma', {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({
-        //             figmaFileUrl,
-        //             figmaPat,
-        //             figmaNodeId,
-        //         }),
-        //     });
-        //     if (response.ok) {
-        //         const data = await response.json();
-        //         console.log('Figma critique received:', data);
-        //         router.push('/critique-results'); // Redirect to results page
-        //     } else {
-        //         console.error('Figma critique failed:', response.statusText);
-        //         alert('Failed to get critique. Please check your URL and PAT.');
-        //     }
-        // } catch (error) {
-        //     console.error('Error during Figma critique:', error);
-        //     alert('An error occurred. Please try again.');
-        // } finally {
-        //     setIsSubmitting(false);
-        // }
+        try {
+            const response = await fetch('http://127.0.0.1:8000/figma-review', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    figma_url: figmaFileUrl, 
+                    figma_pat: figmaPat,     
+                    figma_node: figmaNodeId, 
+                }),
+            });
+            
+            if (response.ok) {
+                const data: DesignCritiqueOutput = await response.json();
+                console.log(data)
+                // --- CRUCIAL STEP: Save data to local storage ---
+                localStorage.setItem('lastCritique', JSON.stringify(data));
+                
+                // Clear state for security and next use
+                setFigmaFileUrl('');
+                setFigmaPat('');
+                setFigmaNodeId('');
 
-        // Simulate API call delay for demonstration
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setIsSubmitting(false);
-        alert("Figma details submitted! (Simulated)");
-        // Optional: Clear form after submission
-        // setFigmaFileUrl('');
-        // setFigmaPat('');
-        // setFigmaNodeId('');
+                // Redirect to the dashboard
+                router.push('/result-dashboard'); 
+            } else {
+                const errorDetail = await response.json().then(data => data.detail).catch(() => response.statusText);
+                console.error('Figma critique failed:', errorDetail);
+                alert(`Critique failed. Error: ${errorDetail}`);
+            }
+        } catch (error) {
+            console.error('Error during Figma critique:', error);
+            alert('A network error occurred. Ensure the FastAPI server is running at http://127.0.0.1:8000.');
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
         <div className="flex flex-col items-center justify-center p-2 min-h-screen-minus-nav">
-            <div className="text-container bg-neutral my-6 rounded-lg max-w-4xl w-full p-6">
+            <div className="text-container bg-gray-100 my-6 rounded-xl max-w-4xl w-full p-6 shadow-lg">
                 <InputHeaderComponent
                     header="Figma-Based Review"
                     description="Enter your Figma file URL and Personal Access Token (PAT) to get an AI critique of your design. Suitable for high-fidelity prototypes."
@@ -68,20 +68,21 @@ const TestByFigmaPage = () => {
                 />
             </div>
 
-            <form onSubmit={handleFormSubmit} className="w-full max-w-4xl flex flex-col space-y-4">
+            <form onSubmit={handleFormSubmit} className="w-full max-w-4xl flex flex-col space-y-4 text-gray-100">
+                
                 {/* Figma File URL Input */}
-                <div className="w-full">
-                    <label htmlFor="figma-url" className="block text-sm font-medium text-gray-800 mb-1">
+                <div className="w-full border-2 p-4 rounded-lg shadow-md">
+                    <label htmlFor="figma-url" className="block text-sm font-medium text-gray-600 mb-1">
                         Figma File URL
                     </label>
                     <input
                         id="figma-url"
                         type="url"
                         placeholder="e.g., https://www.figma.com/file/..."
-                        value={figmaFileUrl!}
+                        value={figmaFileUrl}
                         onChange={(e) => setFigmaFileUrl(e.target.value)}
                         required
-                        className="border border-gray-700 bg-white rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <p className="mt-1 text-xs text-gray-400">
                         Paste the full URL of your Figma file. Ensure it's accessible by your PAT (e.g., not restricted).
@@ -89,18 +90,18 @@ const TestByFigmaPage = () => {
                 </div>
 
                 {/* Figma Personal Access Token (PAT) Input */}
-                <div className="w-full">
-                    <label htmlFor="figma-pat" className="block text-sm font-medium text-gray-800 mb-1">
+                <div className="w-full border-2 p-4 rounded-lg shadow-md">
+                    <label htmlFor="figma-pat" className="block text-sm font-medium text-gray-600 mb-1">
                         Figma Personal Access Token (PAT)
                     </label>
                     <input
                         id="figma-pat"
                         type="password"
                         placeholder="e.g., figd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                        value={figmaPat!}
+                        value={figmaPat}
                         onChange={(e) => setFigmaPat(e.target.value)}
                         required
-                        className="border border-gray-700 bg-white rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border text-gray-600 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <p className="mt-1 text-xs text-gray-400">
                         Generate a PAT in Figma: <a href="https://www.figma.com/developers/api#access-tokens" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Settings &gt; Personal Access Tokens</a>. Your PAT is used only for this critique and is not stored.
@@ -108,27 +109,30 @@ const TestByFigmaPage = () => {
                 </div>
 
                 {/* Optional Figma Node ID Input */}
-                <div className="w-full">
-                    <label htmlFor="figma-node-id" className="block text-sm font-medium text-gray-800 mb-1">
+                <div className="w-full border-2 p-4 rounded-lg shadow-md">
+                    <label htmlFor="figma-node-id" className="block text-sm font-medium text-gray-600 mb-1">
                         Specific Frame/Node ID (Optional)
                     </label>
                     <input
                         id="figma-node-id"
                         type="text"
                         placeholder="e.g., 123:456"
-                        value={figmaNodeId!}
+                        value={figmaNodeId}
                         onChange={(e) => setFigmaNodeId(e.target.value)}
-                        className="border border-gray-700 bg-white rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <p className="mt-1 text-xs text-gray-400">
-                        (Optional) The ID of a specific frame, group, or component. Find it in the Figma URL after `node-id=`. If left blank, the AI will attempt to critique the entire canvas or first page.
+                        (Optional) The ID of a specific frame, group, or component. Find it in the Figma URL after `node-id=`. If left blank, the AI will attempt to critique the selection or entire page.
                     </p>
                 </div>
 
                 {/* Footer Buttons */}
                 <InputFooterComponent
-                    onClickBack={() => router.push('/input-method')}
-                    onClickGenerate={() => console.log("submitted")}
+                    // NOTE: Use the correct router link for navigating back to the selection page
+                    onClickBack={() => router.push('/critique-method')} 
+                    // Pass the submitting state to the footer component for button disabling/loading
+                    isSubmitting={isSubmitting}
+                    onClickGenerate={handleFormSubmit}
                 />
             </form>
         </div>
