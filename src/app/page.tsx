@@ -32,8 +32,8 @@ export default function HomePage() {
         <TileComponent
           title="Simulate Your Users"
           description="Use this to simulate your target audiance and get insights from them"
-          onClick={() => router.push('/simulate-user')}
-          isComingSoon={true}
+          onClick={() => router.push('/simulate-users')}
+          isComingSoon={false}
         />
       </div>
     </div>
