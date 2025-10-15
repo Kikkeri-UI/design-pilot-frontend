@@ -22,7 +22,7 @@ const FigmaInputSection: React.FC<FigmaInputSectionProps> = ({
     setFigmaNodeId,
 }) => {
     const inputClassName =
-        'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out';
+        'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out text-gray-600';
 
     const labelClassName = 'block text-sm font-medium text-gray-700 mb-1 mt-4';
 
