@@ -10,6 +10,7 @@ import FigmaInputSection from '../components/generic/figma-input-component/figma
 import UserSimulationForm from '../components/generic/user-simulation-form/userSimulationForm';
 import InputHeaderComponent from '../components/generic/input-header-component/inputHeaderComponent.UI';
 import InputFooterComponent from '../components/generic/input-footer/inputFooter.UI';
+import { ConstructUserContext } from './constructUserContext';
 
 export default function SimulateUserPage() {
     const router = useRouter();
@@ -23,7 +24,7 @@ export default function SimulateUserPage() {
     const [digitalLiteracy, setDigitalLiteracy] = useState("Intermediate");
     const [ageRange, setAgeRange] = useState("26-45");
     const [visionImpairments, setVisionImpairments] = useState<string[]>([]); // Checkboxes
-    const [deviceUsed, setDeviceUsed] = useState("Desktop");
+    const [gender, SetGender] = useState("Female");
     const [customContext, setCustomContext] = useState(""); // Additional text field
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,31 +41,45 @@ export default function SimulateUserPage() {
         setIsSubmitting(true);
         setCritiqueResult(null);
 
-        // 1. Construct the detailed user_context string for the AI model
-        const userContext = `
-      Critique the design from the perspective of a user with the following profile:
-      - Age Range: ${ageRange}
-      - Digital Literacy: ${digitalLiteracy}
-      - Primary Device: ${deviceUsed}
-      - Accessibility Needs: ${visionImpairments.length > 0 ? visionImpairments.join(', ') : 'None specified'}
-      - **Specific Scenario/Goal:** ${customContext || 'No additional context provided.'}
-    `.trim();
+        const visionString = visionImpairments.join(', ')
+
+        const contextObject = {
+            // Map 'gender' to the 'deviceUsed' prop you were using in the component.
+            // NOTE: If you are using 'gender' as a proxy for 'deviceUsed' in the component props, 
+            // you should rename 'deviceUsed' prop to 'gender' in the component file for clarity.
+            gender: gender as 'male' | 'female', // Ensure casting if necessary
+            ageRange,
+            // *** FIX: Pass the concatenated string instead of the array ***
+            vision: visionString as 'colour_blind' | 'low_vision' | 'normal',
+            digitalLiteracy,
+            extra_context: customContext
+        } as {
+            gender: 'male' | 'female',
+            ageRange: string,
+            vision: 'colour_blind' | 'low_vision' | 'normal' | string,
+            digitalLiteracy: 'beginner' | 'advanced' | 'intermediate',
+            extra_context: string
+        };
+
+
+        const userContext = ConstructUserContext(contextObject)
+
 
         // 2. Construct the combined payload for the backend
         const payload = {
             figma_url: figmaUrl,
             figma_pat: figmaPat,
             figma_node: figmaNodeId,
-            user_context: userContext, // <-- The detailed context string
+            user_context: userContext,
         };
 
-        console.log('User Simulation Request Payload:', payload);
+        console.log('User Simulation Request Payload:', payload.user_context);
 
         // --- API Call Integration (Placeholder) ---
-        /*
+        
         try {
-          // NOTE: Update this URL to your correct FastAPI endpoint for user simulation
-          const response = await fetch('/api/simulate-user-critique', { 
+          //NOTE: Update this URL to your correct FastAPI endpoint for user simulation
+          const response = await fetch('http://127.0.0.1:8000/simulate-user', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -83,13 +98,6 @@ export default function SimulateUserPage() {
         } finally {
           setIsSubmitting(false);
         }
-        */
-
-        // For now, simulating a successful submission:
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setCritiqueResult({ success: 'Simulated User Critique Initiated! Check console for detailed user_context payload.' });
-        }, 2000);
     };
 
     return (
@@ -122,7 +130,7 @@ export default function SimulateUserPage() {
                     digitalLiteracy={digitalLiteracy} setDigitalLiteracy={setDigitalLiteracy}
                     ageRange={ageRange} setAgeRange={setAgeRange}
                     visionImpairments={visionImpairments} setVisionImpairments={setVisionImpairments}
-                    deviceUsed={deviceUsed} setDeviceUsed={setDeviceUsed}
+                    deviceUsed={gender} setDeviceUsed={SetGender}
                     customContext={customContext} setCustomContext={setCustomContext}
                     isSubmitting={isSubmitting}
                 />

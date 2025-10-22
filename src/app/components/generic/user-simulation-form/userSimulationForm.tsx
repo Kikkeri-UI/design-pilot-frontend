@@ -16,10 +16,10 @@ interface UserSimulationFormProps {
     isSubmitting: boolean;
 }
 
-const DIGITAL_LITERACY_OPTIONS = ["Novice", "Intermediate", "Expert", "Tech-Averse"];
+const DIGITAL_LITERACY_OPTIONS = ["Beginner", "Intermediate", "Advanced"];
 const AGE_RANGE_OPTIONS = ["18-25", "26-45", "46-64", "65+"];
-const DEVICE_OPTIONS = ["Mobile", "Tablet", "Desktop"];
-const VISION_IMPAIRMENT_OPTIONS = ["Color Blindness (General)", "Low Vision"];
+const GENDER = ["Male", "Female"];
+const VISION_IMPAIRMENT_OPTIONS = ["Color Blindness (General)", "Low Vision", "No Issues"];
 
 const UserSimulationForm: React.FC<UserSimulationFormProps> = ({
     digitalLiteracy, setDigitalLiteracy,
@@ -29,41 +29,41 @@ const UserSimulationForm: React.FC<UserSimulationFormProps> = ({
     customContext, setCustomContext,
     isSubmitting
 }) => {
-    
+
     // Helper function for checkbox changes
     const handleVisionChange = (impairment: string, isChecked: boolean) => {
-        setVisionImpairments(prev => 
+        setVisionImpairments(prev =>
             isChecked ? [...prev, impairment] : prev.filter(v => v !== impairment)
         );
     };
 
-    const inputClass = isSubmitting 
-        ? 'border border-gray-300 rounded-lg w-full p-3 bg-gray-100 text-gray-500 cursor-not-allowed' 
+    const inputClass = isSubmitting
+        ? 'border border-gray-300 rounded-lg w-full p-3 bg-gray-100 text-gray-500 cursor-not-allowed'
         : 'border border-gray-300 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-accent transition duration-150 ease-in-out';
-    
+
     const labelClass = "block text-sm font-medium text-gray-700 mb-1";
 
     return (
         <div className="w-full p-6 rounded-xl shadow-lg border-2 border-border space-y-6 bg-white">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Target Audience Profile</h2>
             <p className="text-sm text-gray-600">
-              Define the user persona for the most relevant AI critique.
+                Define the user persona for the most relevant AI critique.
             </p>
 
             {/* Grid for Dropdowns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* Digital Literacy */}
+
+                {/* Gender */}
                 <div>
-                    <label htmlFor="literacy" className={labelClass}>Digital Literacy</label>
+                    <label htmlFor="device" className={labelClass}>Gender</label>
                     <select
-                        id="literacy"
-                        value={digitalLiteracy}
-                        onChange={(e) => setDigitalLiteracy(e.target.value)}
+                        id="device"
+                        value={deviceUsed}
+                        onChange={(e) => setDeviceUsed(e.target.value)}
                         disabled={isSubmitting}
                         className={inputClass}
                     >
-                        {DIGITAL_LITERACY_OPTIONS.map(opt => (
+                        {GENDER.map(opt => (
                             <option key={opt} value={opt}>{opt}</option>
                         ))}
                     </select>
@@ -85,17 +85,17 @@ const UserSimulationForm: React.FC<UserSimulationFormProps> = ({
                     </select>
                 </div>
 
-                {/* Device Used */}
+                {/* Digital Literacy */}
                 <div>
-                    <label htmlFor="device" className={labelClass}>Device Used</label>
+                    <label htmlFor="literacy" className={labelClass}>Digital Literacy</label>
                     <select
-                        id="device"
-                        value={deviceUsed}
-                        onChange={(e) => setDeviceUsed(e.target.value)}
+                        id="literacy"
+                        value={digitalLiteracy}
+                        onChange={(e) => setDigitalLiteracy(e.target.value)}
                         disabled={isSubmitting}
                         className={inputClass}
                     >
-                        {DEVICE_OPTIONS.map(opt => (
+                        {DIGITAL_LITERACY_OPTIONS.map(opt => (
                             <option key={opt} value={opt}>{opt}</option>
                         ))}
                     </select>
